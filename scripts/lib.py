@@ -5,6 +5,8 @@ Created on Tue Dec 12 11:35:14 2017
 
 @author: lukas
 """
+from pathlib import Path
+from loguru import logger
 import os
 from shutil import copy
 import sys
@@ -149,7 +151,7 @@ def shuffle_in_unison(a, b):
 
 
 def generateRandomIndexesSubjects(n_subjects, total_subjects):
-    indexSubjects = random.sample(xrange(total_subjects), n_subjects)
+    indexSubjects = random.sample(range(total_subjects), n_subjects)
     return indexSubjects
 
 def getSubjectChannels(subjectIndexes, channel):
@@ -258,15 +260,15 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
             #background_voxels = np.argwhere(data_label[mySlice] == 0)
             for _ in range(patches_per_subject):
                 x = random.choice(mySlice)#mySlice 
-                y = random.choice(xrange(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
-                z = random.choice(xrange(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
+                y = random.choice(range(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
+                z = random.choice(range(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
                 scanVoxels.append([x,y,z])
         else:
             for _ in range(patches_per_subject):
                 #x = int(truncated_normal(mean=target_shape[0]/2, stddev=target_shape[0]/5, minval=0, maxval=target_shape[0])) # --> Make more probably to pick slices from the MIDDLE. 
-                x = random.choice(xrange(dpatch[0]/2,int(target_shape[0])-(dpatch[0]/2)+1))   
-                y = random.choice(xrange(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
-                z = random.choice(xrange(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
+                x = random.choice(range(dpatch[0]/2,int(target_shape[0])-(dpatch[0]/2)+1))   
+                y = random.choice(range(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
+                z = random.choice(range(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
                 scanVoxels.append([x,y,z])            
             
         allVoxelIndexes[subjectIndexes] = scanVoxels
@@ -292,7 +294,7 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
             #print('Found previously stored voxel locations..')
             candidate_voxels_for_sampling = np.load(voxel_locations_array, allow_pickle=True)
             candidate_voxels_for_sampling = candidate_voxels_for_sampling[candidate_voxels_for_sampling.keys()[0]]
-            scanVoxels = candidate_voxels_for_sampling[random.sample(xrange(0,len(candidate_voxels_for_sampling)), min(len(candidate_voxels_for_sampling),patches_per_subject))]
+            scanVoxels = candidate_voxels_for_sampling[random.sample(range(0,len(candidate_voxels_for_sampling)), min(len(candidate_voxels_for_sampling),patches_per_subject))]
         else:
             # No previously stored voxel coordinates for candidate sampling ############
             ############################################################################    
@@ -310,7 +312,7 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
                   print('Original shape = {}'.format(data_label.shape))
                   sys.exit(0)
                 np.savez_compressed(CV_FOLDS_ARRAYS_PATH + scan_ID + '_Foreground_voxel_locations',fg)
-                scanVoxels = fg[random.sample(xrange(0,len(fg)), min(len(fg),patches_per_subject))]
+                scanVoxels = fg[random.sample(range(0,len(fg)), min(len(fg),patches_per_subject))]
             else:  
                 # Only getting non-tumor voxels from benign scans:    
                 breastMask = [x for x in os.listdir(BM_PATH) if exam in x and side in x][0]
@@ -318,7 +320,7 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
                 bV = np.argwhere(bm_nii > 0)
                 np.savez_compressed(CV_FOLDS_ARRAYS_PATH + scan_ID + '_Background_BreastMask_voxel_locations', bV)                    
                 # Half from the intensity-based sampling:
-                scanVoxels = bV[random.sample(xrange(0,len(bV)), min( len(bV), patches_per_subject) )] 
+                scanVoxels = bV[random.sample(range(0,len(bV)), min( len(bV), patches_per_subject) )] 
             del fg
             del bV                  
         
@@ -344,17 +346,17 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
             if benign_scan:
                 #print('Scan benign. Sampling half from voxel-intensity > {}'.format(percentile_voxel_intensity_sample_benigns))
                 # Half from the intensity-based sampling:
-                scanVoxels = candidate_voxels_for_sampling[random.sample(xrange(0,len(candidate_voxels_for_sampling)), 
+                scanVoxels = candidate_voxels_for_sampling[random.sample(range(0,len(candidate_voxels_for_sampling)), 
                                                                          min( len(candidate_voxels_for_sampling), patches_per_subject/2) )].tolist()   
                 # Half from random locations:
                 for _ in range(patches_per_subject/2):
                     x = int(truncated_normal(mean=target_shape[0]/2, stddev=target_shape[0]/5, minval=0, maxval=target_shape[0]))
-                    y = random.choice(xrange(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
-                    z = random.choice(xrange(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
+                    y = random.choice(range(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
+                    z = random.choice(range(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
                     scanVoxels.append([x,y,z])      
             else:
                 #print('Scan malignant, sampling from labeled region.')
-                scanVoxels = candidate_voxels_for_sampling[random.sample(xrange(0,len(candidate_voxels_for_sampling)), min(len(candidate_voxels_for_sampling),patches_per_subject))]
+                scanVoxels = candidate_voxels_for_sampling[random.sample(range(0,len(candidate_voxels_for_sampling)), min(len(candidate_voxels_for_sampling),patches_per_subject))]
                
                 
         else:
@@ -380,7 +382,7 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
                   print('Original shape = {}'.format(data_label.shape))
                   sys.exit(0)
                 np.savez_compressed(CV_FOLDS_ARRAYS_PATH + scan_ID + '_Foreground_voxel_locations',fg)
-                scanVoxels = fg[random.sample(xrange(0,len(fg)), min(len(fg),patches_per_subject))]
+                scanVoxels = fg[random.sample(range(0,len(fg)), min(len(fg),patches_per_subject))]
             else:  
                 # Only getting non-tumor voxels from benign scans:
                 if percentile_voxel_intensity_sample_benigns > 0:
@@ -388,19 +390,19 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
                     bV = getBodyVoxels(channel_mri, percentile_voxel_intensity_sample_benigns)
                     np.savez_compressed(CV_FOLDS_ARRAYS_PATH + scan_ID + '_Background_voxel_locations_{}_percentile'.format(percentile_voxel_intensity_sample_benigns),bV)                    
                     # Half from the intensity-based sampling:
-                    scanVoxels = bV[random.sample(xrange(0,len(bV)), min( len(bV), patches_per_subject/2) )].tolist()   
+                    scanVoxels = bV[random.sample(range(0,len(bV)), min( len(bV), patches_per_subject/2) )].tolist()   
                     # Half from random locations:
                     for _ in range(patches_per_subject/2):
                         x = int(truncated_normal(mean=target_shape[0]/2, stddev=target_shape[0]/5, minval=0, maxval=target_shape[0])) 
-                        y = random.choice(xrange(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
-                        z = random.choice(xrange(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
+                        y = random.choice(range(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
+                        z = random.choice(range(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
                         scanVoxels.append([x,y,z])          
                 else:
                     scanVoxels = []
                     for _ in range(patches_per_subject):
-                        x = int(truncated_normal(mean=target_shape[0]/2, stddev=target_shape[0]/5, minval=0, maxval=target_shape[0]))#random.choice(xrange(dpatch[0]/2,int(target_shape[0])-(dpatch[0]/2)+1))  
-                        y = random.choice(xrange(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
-                        z = random.choice(xrange(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
+                        x = int(truncated_normal(mean=target_shape[0]/2, stddev=target_shape[0]/5, minval=0, maxval=target_shape[0]))#random.choice(range(dpatch[0]/2,int(target_shape[0])-(dpatch[0]/2)+1))  
+                        y = random.choice(range(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
+                        z = random.choice(range(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
                         scanVoxels.append([x,y,z])
             del fg
             del bV   
@@ -412,9 +414,9 @@ def generateVoxelIndexes_parallel(subjectIndexes,CV_FOLDS_ARRAYS_PATH, target_sh
         # only one 2D slice is labeled with the breast mask, so on the sagittal dimension there is no freedom of choice.
         for _ in range(patches_per_subject):
             #x = int(truncated_normal(mean=target_shape[0]/2, stddev=target_shape[0]/5, minval=0, maxval=target_shape[0])) # --> Make more probably to pick slices from the MIDDLE. 
-            x = random.choice(xrange(dpatch[0]/2,int(target_shape[0])-(dpatch[0]/2)+1))   
-            y = random.choice(xrange(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
-            z = random.choice(xrange(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
+            x = random.choice(range(dpatch[0]/2,int(target_shape[0])-(dpatch[0]/2)+1))   
+            y = random.choice(range(dpatch[1]/2,int(target_shape[1])-(dpatch[1]/2)+1))
+            z = random.choice(range(dpatch[2]/2,int(target_shape[2])-(dpatch[2]/2)+1))
             scanVoxels.append([x,y,z])            
             
         allVoxelIndexes[subjectIndexes] = scanVoxels        
@@ -577,11 +579,11 @@ def extractCoordinates(shapes, voxelCoordinates, output_dpatch):
     #subjects = getSubjectsToSample(channel, subjectIndexes)
     
     all_coordinates = []
-    for i in xrange(len(shapes)):
+    for i in range(len(shapes)):
         #subject = str(subjects[i])[:-1]
         #img = nib.load(subject)
         img_shape = shapes[i]
-        for j in xrange(len(voxelCoordinates[i])):     
+        for j in range(len(voxelCoordinates[i])):     
             D1,D2,D3 = voxelCoordinates[i][j]
             #all_coordinates.append(get_Coordinates_from_target_patch(img.shape,D1,D2,D3))                 
             all_coordinates.append(get_Coordinates_from_target_patch(img_shape,D1,D2,D3, output_dpatch))                    
@@ -1010,7 +1012,7 @@ def sampleTrainData_daemon(return_dict, procnum, INDEX_START_MALIGNANTS, INDEX_S
         
     output_dpatch = dpatch[0] - model_patch_reduction[0], dpatch[1] - model_patch_reduction[1], dpatch[2] - model_patch_reduction[2]
     patches_per_subject = get_patches_per_subject( n_patches, n_subjects)    
-    labelsFile = open(trainLabels).readlines()    
+    labelsFile = open(Path(Path(__file__).parent, '../CV_folders', trainLabels).as_posix()).readlines()    
     total_subjects = len(labelsFile)
 
     if balanced_sample_subjects:     
@@ -2228,7 +2230,7 @@ def train_test_model(configFile, workingDir):
 
         CV_FOLDS_ARRAYS_PATH = '/home/deeperthought/Projects/MultiPriors_MSKCC/CV_folds/CV_alignedNii-Aug2019_actual-F4-training/arrays/'#'/'.join(cfg.trainChannels[0].split('/')[:-1]) + '/arrays/'
         if not os.path.exists(CV_FOLDS_ARRAYS_PATH):
-            os.mkdir(CV_FOLDS_ARRAYS_PATH)
+            os.makedirs(CV_FOLDS_ARRAYS_PATH)
         
         #copy(workingDir + configFile[1:], wd)
         copy(configFile, wd)
@@ -2236,7 +2238,7 @@ def train_test_model(configFile, workingDir):
         print(model.summary())
         val_performance = []
         from keras.utils import plot_model
-        plot_model(model, to_file=wd+'/multiscale_TPM.png', show_shapes=True)
+        # plot_model(model, to_file=wd+'/multiscale_TPM.png', show_shapes=True)
         with open(wd+'/model_summary.txt','w') as fh:
             # Pass the file handle in as a lambda function to make it callable
             model.summary(print_fn=lambda x: fh.write(x + '\n'))
@@ -2404,7 +2406,7 @@ def train_test_model(configFile, workingDir):
     
         val_data_process.start()
 
-    for epoch in xrange(start_epoch,cfg.epochs):
+    for epoch in range(start_epoch,cfg.epochs):
       t1 = time.time()
       my_logger("######################################################",logfile)
       my_logger("                   TRAINING EPOCH " + str(epoch) + "/" + str(cfg.epochs),logfile)
@@ -2421,8 +2423,7 @@ def train_test_model(configFile, workingDir):
         smooth_dice_scores = []
         foreground_percent_list = []
         subjectIndex = 0
-
-        with open(cfg.validationLabels) as vl:
+        with open(Path(Path(__file__).parent, '../CV_folds/TEST_IMAGES_LABELS.txt').absolute().as_posix()) as vl:
             n_valSubjects = len(vl.readlines())
         if cfg.test_subjects > n_valSubjects:
             print("Given number of subjects for test set (" + str(cfg.test_subjects) +") is larger than the amount of \
@@ -2442,7 +2443,7 @@ def train_test_model(configFile, workingDir):
                 list_subjects_fullSegmentation.extend(random.sample(benign_subjects_index, cfg.n_full_segmentations - len(list_subjects_fullSegmentation)))
                 random.shuffle(list_subjects_fullSegmentation)
             else:
-                list_subjects_fullSegmentation = random.sample(xrange(cfg.test_subjects ), cfg.n_full_segmentations)
+                list_subjects_fullSegmentation = random.sample(range(cfg.test_subjects ), cfg.n_full_segmentations)
 
         else:
             list_subjects_fullSegmentation = cfg.list_subjects_fullSegmentation

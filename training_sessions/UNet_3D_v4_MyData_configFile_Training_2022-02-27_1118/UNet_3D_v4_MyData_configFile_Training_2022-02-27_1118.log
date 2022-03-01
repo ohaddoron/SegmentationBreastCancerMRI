@@ -1,0 +1,33 @@
+
+#######################################  NEW TRAINING SESSION  #######################################
+['/home/CV_folds/TRAINING_IMAGES_T1.txt', '/home/CV_folds/TRAINING_IMAGES_T2.txt']
+/home/CV_folds/TRAINING_IMAGES_LABELS.txt
+['/home/CV_folds/VALIDATION_IMAGES_T1.txt', '/home/CV_folds/VALIDATION_IMAGES_T2.txt']
+/homeVALIDATION_IMAGES_LABELS.txt
+['/home/CV_folds/VALIDATION_IMAGES_T1.txt', '/home/CV_folds/VALIDATION_IMAGES_T2.txt']
+/homeVALIDATION_IMAGES_LABELS.txt
+TPM channel (if given):
+
+Session parameters: 
+[num_iter, epochs, n_patches, n_patches_val, n_subjects, samplingMethod_train, size_minibatches, n_full_segmentations, epochs_for_fullSegmentation, size_test_minibatches]
+[100, 100, 1000, 1000, 100, 1, 16, 120, array([  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
+        13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
+        26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,
+        39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,
+        52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,
+        65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,
+        78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,
+        91,  92,  93,  94,  95,  96,  97,  98,  99, 100]), 1]
+Dropout for last two fully connected layers: [0, 0]
+Model loss function: <function Generalised_dice_coef_multilabel2 at 0x7ff0b20f0d90>
+Model number of parameters: 171270530
+Optimizer used: <bound method OptimizerV2.from_config of <class 'tensorflow.python.keras.optimizer_v2.adam.Adam'>>
+Optimizer parameters: {'name': 'Adam', 'learning_rate': 1e-05, 'decay': 0.0, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-07, 'amsgrad': False}
+Save full segmentation of subjects: True
+EARLY STOP Threshold last 3 epochs: 0
+######################################################
+                   TRAINING EPOCH 0/100
+######################################################
+------------------------------------------------------
+                 FULL SEGMENTATION
+------------------------------------------------------

@@ -51,7 +51,7 @@ resolution = 'high'
 
 intensity_normalization_method = 2
 
-path_to_model = '/path/to/trained/model.h5'
+path_to_model = '../Models/fastSegmenter.h5'
 session =  path_to_model.split('/')[-3]
 
 ########################################### TEST PARAMETERS

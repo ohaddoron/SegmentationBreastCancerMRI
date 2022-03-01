@@ -366,7 +366,7 @@ class MultiPriors_v0():
 
     	#model = multi_gpu_model(model, gpus=4)
 
-    	if self.loss_function == 'Dice':
+        if self.loss_function == 'Dice':
             model.compile(loss=Generalised_dice_coef_multilabel2, optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
         elif self.loss_function == 'Multinomial':
             model.compile(loss='binary_crossentropy', optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
@@ -537,7 +537,7 @@ class MultiPriors_v1():
 
     	#model = multi_gpu_model(model, gpus=4)
 
-    	if self.loss_function == 'Dice':
+        if self.loss_function == 'Dice':
             model.compile(loss=Generalised_dice_coef_multilabel2, optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
         elif self.loss_function == 'Multinomial':
             model.compile(loss='binary_crossentropy', optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
@@ -1427,7 +1427,7 @@ class MultiPriors_v2_ContextOutput():
 
     	#model = multi_gpu_model(model, gpus=4)
 
-    	if self.loss_function == 'Dice':
+        if self.loss_function == 'Dice':
             model.compile(loss=Generalised_dice_coef_multilabel2, optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
         elif self.loss_function == 'Multinomial':
             model.compile(loss='binary_crossentropy', optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
@@ -1584,7 +1584,7 @@ class MultiPriors_v3_TEST():
 
     	#model = multi_gpu_model(model, gpus=4)
 
-    	if self.loss_function == 'Dice':
+        if self.loss_function == 'Dice':
             model.compile(loss=Generalised_dice_coef_multilabel2, optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
         elif self.loss_function == 'Multinomial':
             model.compile(loss='binary_crossentropy', optimizer=Adam(lr=self.learning_rate), metrics=['acc', dice_coef_multilabel0, dice_coef_multilabel1])
